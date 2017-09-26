@@ -99,7 +99,7 @@ public class HatterActivity extends AppCompatActivity {
 
             if(path != null) {
                 Log.i("Path", path);
-                //getHatterView().setImagePath(path);
+                getHatterView().setImagePath(path);
             }
 
         }
