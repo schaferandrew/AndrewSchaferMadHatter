@@ -24,15 +24,16 @@ tools:context="edu.schaf170msu.andrewschafermadhatter.HatterActivity">
     android:layout_toEndOf="@+id/buttonColor"
     android:text="@string/feather_string" />
 
-<Button
-    android:id="@+id/buttonPicture"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_above="@+id/buttonColor"
-    android:layout_alignParentStart="true"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:text="@string/picture_string" />
+    <Button
+        android:id="@+id/buttonPicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonColor"
+        android:layout_alignParentStart="true"
+        android:onClick="onPicture"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/picture_string" />
 
 <Spinner
     android:id="@+id/spinnerHat"
