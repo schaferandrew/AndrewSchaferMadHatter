@@ -214,6 +214,7 @@ public class HatterView extends View {
                 touch1.id = id;
                 touch2.id = -1;
                 getPositions(event);
+                touch1.copyToLast();
                 return true;
 
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -230,8 +231,9 @@ public class HatterView extends View {
                 return true;
 
             case MotionEvent.ACTION_MOVE:
-
-                break;
+                getPositions(event);
+                move();
+                return true;
         }
 
         return super.onTouchEvent(event);
@@ -248,14 +250,21 @@ public class HatterView extends View {
             // Get the pointer id
             int id = event.getPointerId(i);
 
-            // Get coordinates
-            float x = event.getX(i);
-            float y = event.getY(i);
+            // Convert to image coordinateds
+            float x = (event.getX(i) - marginLeft) / imageScale;
+            float y = (event.getY(i) - marginTop) / imageScale;
+
+//            for testing
+//            params.hatX = x;
+//            params.hatY = y;
+
 
             if(id == touch1.id) {
+                touch1.copyToLast();
                 touch1.x = x;
                 touch1.y = y;
             } else if(id == touch2.id) {
+                touch2.copyToLast();
                 touch2.x = x;
                 touch2.y = y;
             }
@@ -326,6 +335,53 @@ public class HatterView extends View {
          * Previous y location
          */
         public float lastY = 0;
+
+        /**
+         * Change in x value from previous
+         */
+        public float dX = 0;
+
+        /**
+         * Change in y value from previous
+         */
+        public float dY = 0;
+
+        /**
+         * Copy the current values to the previous values
+         */
+        public void copyToLast() {
+            lastX = x;
+            lastY = y;
+        }
+
+        /**
+         * Compute the values of dX and dY
+         */
+        public void computeDeltas() {
+            dX = x - lastX;
+            dY = y - lastY;
+        }
+    }
+
+    /**
+     * Handle movement of the touches
+     */
+    private void move() {
+        // If no touch1, we have nothing to do
+        // This should not happen, but it never hurts
+        // to check.
+        if(touch1.id < 0) {
+            return;
+        }
+
+        if(touch1.id >= 0) {
+            // At least one touch
+            // We are moving
+            touch1.computeDeltas();
+
+            params.hatX += touch1.dX;
+            params.hatY += touch1.dY;
+        }
     }
 
 }
