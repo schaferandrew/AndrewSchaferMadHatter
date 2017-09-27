@@ -190,14 +190,14 @@ public class HatterView extends View {
             canvas.drawBitmap(hatbandBitmap, 0, 0, null);
         }
 
-//        if(params.drawthefeather()) {
-//            // Android scaled images that it loads. The placement of the
-//            // feather is at 322, 22 on the original image when it was
-//            // 500 pixels wide. It will have to move based on how big
-//            // the hat image actually is.
-//            float factor = hatBitmap.getWidth() / 500.0f;
-//            canvas.drawBitmap(featherBitmap, 322 * factor, 22 * factor, null);
-//        }
+        if(params.drawthefeather()) {
+            // Android scaled images that it loads. The placement of the
+            // feather is at 322, 22 on the original image when it was
+            // 500 pixels wide. It will have to move based on how big
+            // the hat image actually is.
+            float factor = hatBitmap.getWidth() / 500.0f;
+            canvas.drawBitmap(featherBitmap, 322 * factor, 22 * factor, null);
+        }
 
         canvas.restore();
     }
@@ -459,13 +459,17 @@ public class HatterView extends View {
 
     }
 
-//    public void checkFeatherBox(){
-//        boolean status = params.drawthefeather();
-//        params.setFeatherStatus(!status);
-//        if (!status){
-//            featherBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.feather);
-//        }
-//    }
+    public void checkFeatherBox(){
+        boolean status = params.drawthefeather();
+        params.setFeatherStatus(!status);
+        if (!status){
+            featherBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.feather);
+        }
+        else {
+            featherBitmap = null;
+        }
+        invalidate();
+    }
 
 
     private static class Parameters implements Serializable {
@@ -504,18 +508,18 @@ public class HatterView extends View {
          */
         public int color = Color.CYAN;
 
-//        public void setFeatherStatus(boolean featherStatus) {
-//            this.featherStatus = featherStatus;
-//        }
-//
-//        /**
-//         * param for whether feather is checked
-//         */
-//        public boolean featherStatus = true;
-//
-//        public boolean drawthefeather() {
-//            return featherStatus;
-//        }
+        public void setFeatherStatus(boolean featherStatus) {
+            this.featherStatus = featherStatus;
+        }
+
+        /**
+         * param for whether feather is checked
+         */
+        public boolean featherStatus = false;
+
+        public boolean drawthefeather() {
+            return featherStatus;
+        }
 
 
     }

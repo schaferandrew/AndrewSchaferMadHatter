@@ -23,7 +23,7 @@ tools:context="edu.schaf170msu.andrewschafermadhatter.HatterActivity">
         android:layout_alignBaseline="@+id/buttonColor"
         android:layout_toEndOf="@+id/buttonColor"
         android:checked="false"
-        android:onClick="onCheckboxClicked"
+        android:onClick="onCheckBox"
         android:text="@string/feather_string" />
 
     <Button
