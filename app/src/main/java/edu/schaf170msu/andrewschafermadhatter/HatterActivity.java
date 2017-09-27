@@ -167,4 +167,13 @@ public class HatterActivity extends AppCompatActivity {
 
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
+
+//    /**
+//     * Handle a Picture button press
+//     * @param view
+//     */
+//    public void onCheckBox(View view) {
+//        getHatterView().checkFeatherBox();
+//    }
 }
+

@@ -16,13 +16,15 @@ tools:context="edu.schaf170msu.andrewschafermadhatter.HatterActivity">
     android:text="@string/color_string"
     android:layout_alignEnd="@+id/buttonPicture" />
 
-<CheckBox
-    android:id="@+id/checkFeather"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignBaseline="@+id/buttonColor"
-    android:layout_toEndOf="@+id/buttonColor"
-    android:text="@string/feather_string" />
+    <CheckBox
+        android:id="@+id/checkFeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonColor"
+        android:layout_toEndOf="@+id/buttonColor"
+        android:checked="false"
+        android:onClick="onCheckboxClicked"
+        android:text="@string/feather_string" />
 
     <Button
         android:id="@+id/buttonPicture"
