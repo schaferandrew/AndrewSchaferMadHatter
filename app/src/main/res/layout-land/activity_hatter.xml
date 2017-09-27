@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="edu.schaf170msu.andrewschafermadhatter.HatterActivity">
+>
+
+    <Button
+        android:id="@+id/buttonPicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/spinnerHat"
+        android:layout_marginEnd="18dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="38dp"
+        android:onClick="onPicture"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/picture_string" />
+
+    <Button
+        android:id="@+id/buttonColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/color_string"
+        android:layout_below="@+id/buttonPicture"
+        android:layout_alignEnd="@+id/buttonPicture"
+        android:layout_alignStart="@+id/spinnerHat" />
+
+    <CheckBox
+        android:id="@+id/checkFeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/feather_string"
+        android:layout_below="@+id/buttonColor"
+        android:layout_alignStart="@+id/buttonColor"
+        android:layout_marginTop="35dp" />
+
+    <Spinner
+        android:id="@+id/spinnerHat"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="false"
+        android:layout_below="@+id/checkFeather" />
+
+    <view
+        android:id="@+id/hatterView"
+        class="edu.schaf170msu.andrewschafermadhatter.HatterView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/buttonPicture"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/black"
+        android:layout_toStartOf="@+id/buttonColor" />
+</RelativeLayout>

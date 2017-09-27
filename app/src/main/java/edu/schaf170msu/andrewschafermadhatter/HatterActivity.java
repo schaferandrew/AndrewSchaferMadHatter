@@ -34,12 +34,6 @@ public class HatterActivity extends AppCompatActivity {
         return (Button)findViewById(R.id.buttonColor);
     }
 
-    /**
-     * The feather checkbox
-     */
-    private CheckBox getFeatherCheck() {
-        return (CheckBox)findViewById(R.id.checkFeather);
-    }
 
     /**
      * The hat choice spinner
