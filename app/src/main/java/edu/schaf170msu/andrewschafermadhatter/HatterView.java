@@ -218,16 +218,33 @@ public class HatterView extends View {
                 return true;
 
             case MotionEvent.ACTION_POINTER_DOWN:
-
+                if(touch1.id >= 0 && touch2.id < 0) {
+                    touch2.id = id;
+                    getPositions(event);
+                    touch2.copyToLast();
+                    return true;
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-
+                touch1.id = -1;
+                touch2.id = -1;
+                invalidate();
                 return true;
 
             case MotionEvent.ACTION_POINTER_UP:
-
+                if(id == touch2.id) {
+                    touch2.id = -1;
+                } else if(id == touch1.id) {
+                    // Make what was touch2 now be touch1 by
+                    // swapping the objects.
+                    Touch t = touch1;
+                    touch1 = touch2;
+                    touch2 = t;
+                    touch2.id = -1;
+                }
+                invalidate();
                 return true;
 
             case MotionEvent.ACTION_MOVE:
@@ -271,6 +288,40 @@ public class HatterView extends View {
         }
 
         invalidate();
+    }
+
+    /**
+     * Rotate the image around the point x1, y1
+     * @param dAngle Angle to rotate in degrees
+     * @param x1 rotation point x
+     * @param y1 rotation point y
+     */
+    public void rotate(float dAngle, float x1, float y1) {
+        params.hatAngle += dAngle;
+
+        // Compute the radians angle
+        double rAngle = Math.toRadians(dAngle);
+        float ca = (float) Math.cos(rAngle);
+        float sa = (float) Math.sin(rAngle);
+        float xp = (params.hatX - x1) * ca - (params.hatY - y1) * sa + x1;
+        float yp = (params.hatX - x1) * sa + (params.hatY - y1) * ca + y1;
+
+        params.hatX = xp;
+        params.hatY = yp;
+    }
+
+    /**
+     * Determine the angle for two touches
+     * @param x1 Touch 1 x
+     * @param y1 Touch 1 y
+     * @param x2 Touch 2 x
+     * @param y2 Touch 2 y
+     * @return computed angle in degrees
+     */
+    private float angle(float x1, float y1, float x2, float y2) {
+        float dx = x2 - x1;
+        float dy = y2 - y1;
+        return (float) Math.toDegrees(Math.atan2(dy, dx));
     }
 
     private class Parameters {
@@ -381,6 +432,18 @@ public class HatterView extends View {
 
             params.hatX += touch1.dX;
             params.hatY += touch1.dY;
+        }
+
+        if(touch2.id >= 0) {
+            // Two touches
+
+            /*
+             * Rotation
+             */
+            float angle1 = angle(touch1.lastX, touch1.lastY, touch2.lastX, touch2.lastY);
+            float angle2 = angle(touch1.x, touch1.y, touch2.x, touch2.y);
+            float da = angle2 - angle1;
+            rotate(da, touch1.x, touch1.y);
         }
     }
 
