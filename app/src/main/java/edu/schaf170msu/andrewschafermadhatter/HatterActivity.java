@@ -53,6 +53,9 @@ public class HatterActivity extends AppCompatActivity {
      */
     private static final int SELECT_PICTURE = 1;
 
+    private static final String PARAMETERS = "parameters";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,22 @@ public class HatterActivity extends AppCompatActivity {
             }
 
         });
+
+        /*
+         * Restore any state
+         */
+        if(savedInstanceState != null) {
+            getHatterView().getFromBundle(PARAMETERS, savedInstanceState);
+
+            getSpinner().setSelection(getHatterView().getHat());
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        getHatterView().putToBundle(PARAMETERS, outState);
     }
 
     /**

@@ -8,9 +8,12 @@ import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.Serializable;
 
 /**
  * The view we will draw out hatter in
@@ -418,7 +421,30 @@ public class HatterView extends View {
         invalidate();
     }
 
-    private class Parameters {
+    /**
+     * Save the view state to a bundle
+     * @param key key name to use in the bundle
+     * @param bundle bundle to save to
+     */
+    public void putToBundle(String key, Bundle bundle) {
+        bundle.putSerializable(key, params);
+    }
+
+    /**
+     * Get the view state from a bundle
+     * @param key key name to use in the bundle
+     * @param bundle bundle to load from
+     */
+    public void getFromBundle(String key, Bundle bundle) {
+        params = (Parameters)bundle.getSerializable(key);
+        // Ensure the options are all set
+        setColor(params.color);
+        setImagePath(params.imagePath);
+        setHat(params.hat);
+
+    }
+
+    private static class Parameters implements Serializable {
         /**
          * Path to the image file if one exists
          */
