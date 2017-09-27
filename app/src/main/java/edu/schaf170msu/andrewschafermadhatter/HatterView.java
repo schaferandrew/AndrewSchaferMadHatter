@@ -4,6 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,6 +73,11 @@ public class HatterView extends View {
     private Touch touch2 = new Touch();
 
     /**
+     * Paint to use when drawing the custom color hat
+     */
+    private Paint customPaint;
+
+    /**
      * Get the installed image path
      * @return path or null if none
      */
@@ -104,7 +113,11 @@ public class HatterView extends View {
 
     private void init(AttributeSet attrs, int defStyle) {
         setHat(HAT_BLACK);
+
+        customPaint = new Paint();
+        customPaint.setColorFilter(new LightingColorFilter(params.color, 0));
     }
+
 
     /**
      * Handle a draw event
@@ -158,7 +171,12 @@ public class HatterView extends View {
         canvas.scale(params.hatScale, params.hatScale);
         canvas.rotate(params.hatAngle);
 
-        canvas.drawBitmap(hatBitmap, 0, 0, null);
+        if(params.hat == HAT_CUSTOM) {
+            canvas.drawBitmap(hatBitmap, 0, 0, customPaint);
+        } else {
+            canvas.drawBitmap(hatBitmap, 0, 0, null);
+        }
+
         if(hatbandBitmap != null) {
             canvas.drawBitmap(hatbandBitmap, 0, 0, null);
         }
@@ -310,6 +328,11 @@ public class HatterView extends View {
         params.hatY = yp;
     }
 
+    public void scale(float scale){
+        scale = scale / 100;
+        params.hatScale = params.hatScale + scale;
+    }
+
     /**
      * Determine the angle for two touches
      * @param x1 Touch 1 x
@@ -322,6 +345,77 @@ public class HatterView extends View {
         float dx = x2 - x1;
         float dy = y2 - y1;
         return (float) Math.toDegrees(Math.atan2(dy, dx));
+    }
+
+    private float distance(float x1, float y1, float x2, float y2) {
+        float pX = (float) Math.pow((x2 - x1),2);
+        float pY = (float) Math.pow((y2 - y1), 2);
+        return (float) Math.sqrt(pX+pY);
+    }
+
+    /**
+     * Handle movement of the touches
+     */
+    private void move() {
+        // If no touch1, we have nothing to do
+        // This should not happen, but it never hurts
+        // to check.
+        if(touch1.id < 0) {
+            return;
+        }
+
+        if(touch1.id >= 0) {
+            // At least one touch
+            // We are moving
+            touch1.computeDeltas();
+
+            params.hatX += touch1.dX;
+            params.hatY += touch1.dY;
+        }
+
+        if(touch2.id >= 0) {
+            // Two touches
+
+            /*
+             * Rotation
+             */
+            float angle1 = angle(touch1.lastX, touch1.lastY, touch2.lastX, touch2.lastY);
+            float angle2 = angle(touch1.x, touch1.y, touch2.x, touch2.y);
+            float da = angle2 - angle1;
+            rotate(da, touch1.x, touch1.y);
+
+            /*
+             * Scaling
+             */
+            // last touch length between - x/y length between
+            float oldDist = distance(touch2.lastX, touch2.lastY, touch1.lastX, touch1.lastY);
+            float newDist = distance(touch2.x, touch2.y, touch1.x, touch1.y);
+            float distanceScale = newDist/oldDist;
+            if (oldDist > newDist) {
+                distanceScale = -distanceScale;
+            }
+            scale(distanceScale);
+        }
+    }
+
+    /**
+     * Get the current custom hat color
+     * @return hat color integer value
+     */
+    public int getColor() {
+        return params.color;
+    }
+
+    /**
+     * Set the current custom hat color
+     * @param color hat color integer value
+     */
+    public void setColor(int color) {
+        params.color = color;
+
+        // Create a new filter to tint the bitmap
+        customPaint.setColorFilter(new LightingColorFilter(color, 0));
+        invalidate();
     }
 
     private class Parameters {
@@ -354,6 +448,11 @@ public class HatterView extends View {
          * Hat rotation angle
          */
         public float hatAngle = 0;
+
+        /**
+         * Custom hat color
+         */
+        public int color = Color.CYAN;
     }
 
     /**
@@ -414,37 +513,7 @@ public class HatterView extends View {
         }
     }
 
-    /**
-     * Handle movement of the touches
-     */
-    private void move() {
-        // If no touch1, we have nothing to do
-        // This should not happen, but it never hurts
-        // to check.
-        if(touch1.id < 0) {
-            return;
-        }
 
-        if(touch1.id >= 0) {
-            // At least one touch
-            // We are moving
-            touch1.computeDeltas();
 
-            params.hatX += touch1.dX;
-            params.hatY += touch1.dY;
-        }
-
-        if(touch2.id >= 0) {
-            // Two touches
-
-            /*
-             * Rotation
-             */
-            float angle1 = angle(touch1.lastX, touch1.lastY, touch2.lastX, touch2.lastY);
-            float angle2 = angle(touch1.x, touch1.y, touch2.x, touch2.y);
-            float da = angle2 - angle1;
-            rotate(da, touch1.x, touch1.y);
-        }
-    }
 
 }
