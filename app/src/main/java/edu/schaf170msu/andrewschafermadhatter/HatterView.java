@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -56,6 +57,16 @@ public class HatterView extends View {
      * don't color the hat band
      */
     private Bitmap hatbandBitmap = null;
+
+    /**
+     * First touch status
+     */
+    private Touch touch1 = new Touch();
+
+    /**
+     * Second touch status
+     */
+    private Touch touch2 = new Touch();
 
     /**
      * Get the installed image path
@@ -189,6 +200,70 @@ public class HatterView extends View {
 
         invalidate();
     }
+
+    /**
+     * Handle a touch event
+     * @param event The touch event
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int id = event.getPointerId(event.getActionIndex());
+
+        switch(event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                touch1.id = id;
+                touch2.id = -1;
+                getPositions(event);
+                return true;
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+
+                return true;
+
+            case MotionEvent.ACTION_POINTER_UP:
+
+                return true;
+
+            case MotionEvent.ACTION_MOVE:
+
+                break;
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    /**
+     * Get the positions for the two touches and put them
+     * into the appropriate touch objects.
+     * @param event the motion event
+     */
+    private void getPositions(MotionEvent event) {
+        for(int i=0;  i<event.getPointerCount();  i++) {
+
+            // Get the pointer id
+            int id = event.getPointerId(i);
+
+            // Get coordinates
+            float x = event.getX(i);
+            float y = event.getY(i);
+
+            if(id == touch1.id) {
+                touch1.x = x;
+                touch1.y = y;
+            } else if(id == touch2.id) {
+                touch2.x = x;
+                touch2.y = y;
+            }
+        }
+
+        invalidate();
+    }
+
     private class Parameters {
         /**
          * Path to the image file if one exists
@@ -219,6 +294,38 @@ public class HatterView extends View {
          * Hat rotation angle
          */
         public float hatAngle = 0;
+    }
+
+    /**
+     * Local class to handle the touch status for one touch.
+     * We will have one object of this type for each of the
+     * two possible touches.
+     */
+    private class Touch {
+        /**
+         * Touch id
+         */
+        public int id = -1;
+
+        /**
+         * Current x location
+         */
+        public float x = 0;
+
+        /**
+         * Current y location
+         */
+        public float y = 0;
+
+        /**
+         * Previous x location
+         */
+        public float lastX = 0;
+
+        /**
+         * Previous y location
+         */
+        public float lastY = 0;
     }
 
 }
